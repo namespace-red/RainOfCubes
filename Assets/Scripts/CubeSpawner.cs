@@ -10,18 +10,13 @@ public class CubeSpawner : MonoBehaviour
     [SerializeField] private Transform _cubeParent;
     
     private Collider _spawnZone;
-    private ObjectPool<GameObject> _pool;
+    private ObjectPool<Cube> _pool;
 
     private void Awake()
     {
         _spawnZone = GetComponent<Collider>();
         
-        _pool = new ObjectPool<GameObject>(
-            createFunc: Create,
-            actionOnGet: Spawn,
-            actionOnRelease: (obj) => obj.SetActive(false),
-            actionOnDestroy: Destroy
-            );
+        _pool = new ObjectPool<Cube>(OnCreateCube, OnGetCube, OnReleaseCube, OnDestroyCube);
     }
 
     private void OnEnable()
@@ -29,22 +24,32 @@ public class CubeSpawner : MonoBehaviour
         StartCoroutine(Run());
     }
 
-    private GameObject Create()
+    private Cube OnCreateCube()
     {
         Cube newCube = Instantiate(_cubePrefab, _cubeParent);
-        newCube.Touched += (cube) => { _pool.Release(cube.gameObject); };
-        
-        GameObject newGameObject = newCube.gameObject;
-        newGameObject.SetActive(false);
-        return newGameObject;
+        newCube.Touched += (с) => { _pool.Release(с); };
+        newCube.gameObject.SetActive(false);
+        return newCube;
     }
     
-    private void Spawn(GameObject obj)
+    private void OnGetCube(Cube cube)
     {
+        GameObject obj = cube.gameObject;
         obj.transform.position = GetSpawnPosition();
         obj.transform.rotation = Quaternion.identity;
-        obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
         obj.SetActive(true);
+    }
+
+    private void OnReleaseCube(Cube cube)
+    {
+        cube.gameObject.SetActive(false);
+        cube.Rigidbody.velocity = Vector3.zero;
+    }
+
+    private void OnDestroyCube(Cube cube)
+    {
+        cube.Touched -= (c) => { _pool.Release(c); };
+        Destroy(cube);
     }
 
     private IEnumerator Run()
@@ -60,9 +65,10 @@ public class CubeSpawner : MonoBehaviour
     
     private Vector3 GetSpawnPosition()
     {
-        float x = Random.Range(_spawnZone.bounds.min.x, _spawnZone.bounds.max.x);
-        float z = Random.Range(_spawnZone.bounds.min.z, _spawnZone.bounds.max.z);
-        float y = _spawnZone.bounds.center.y;
+        var bounds = _spawnZone.bounds;
+        float x = Random.Range(bounds.min.x, bounds.max.x);
+        float z = Random.Range(bounds.min.z, bounds.max.z);
+        float y = bounds.center.y;
 
         return new Vector3(x, y, z);
     }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,13 +10,24 @@ public class Cube : MonoBehaviour
     [SerializeField] private float _maxUntilDeath = 5f;
     
     private Material _material;
+    private Color _startColor;
     private bool _isContacted;
 
     public event Action<Cube> Touched; 
+    
+    public Rigidbody Rigidbody { get; private set; }
 
     private void Awake()
     {
         _material = GetComponent<Renderer>().material;
+        Rigidbody = GetComponent<Rigidbody>();
+        _startColor = _material.color;
+    }
+
+    private void OnDisable()
+    {
+        _isContacted = false;
+        _material.color = _startColor;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -34,10 +44,10 @@ public class Cube : MonoBehaviour
         float untilDeath = Random.Range(_minUntilDeath, _maxUntilDeath);
         Invoke(nameof(ThrowTouchedEvent) , untilDeath);
     }
-    
+
     private Color GetColor()
         => Random.ColorHSV();
-
+    
     private void ThrowTouchedEvent()
     {
         Touched?.Invoke(this);
