@@ -1,4 +1,7 @@
+using System;
+using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Renderer))]
@@ -9,7 +12,9 @@ public class Cube : MonoBehaviour
     
     private Material _material;
     private bool _isContacted;
-    
+
+    public event Action<Cube> Touched; 
+
     private void Awake()
     {
         _material = GetComponent<Renderer>().material;
@@ -27,9 +32,14 @@ public class Cube : MonoBehaviour
         _material.color = GetColor();
 
         float untilDeath = Random.Range(_minUntilDeath, _maxUntilDeath);
-        Destroy(gameObject, untilDeath);
+        Invoke(nameof(ThrowTouchedEvent) , untilDeath);
     }
     
     private Color GetColor()
         => Random.ColorHSV();
+
+    private void ThrowTouchedEvent()
+    {
+        Touched?.Invoke(this);
+    }
 }
