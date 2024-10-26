@@ -23,8 +23,8 @@
       <list>
         <option value="$PROJECT_DIR$/Assets/Scripts/Platform.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/CubeDestroyer.cs" />
-        <option value="$PROJECT_DIR$/Assets/Scripts/CubeSpawner.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Cube.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/CubeSpawner.cs" />
       </list>
     </option>
   </component>
@@ -71,7 +71,8 @@
       <workItem from="1729713480871" duration="2070000" />
       <workItem from="1729844569498" duration="5092000" />
       <workItem from="1729873784118" duration="2037000" />
-      <workItem from="1729884720820" duration="2630000" />
+      <workItem from="1729884720820" duration="3172000" />
+      <workItem from="1729931136842" duration="468000" />
     </task>
     <servers />
   </component>

@@ -27,17 +27,17 @@ public class CubeSpawner : MonoBehaviour
     private Cube OnCreateCube()
     {
         Cube newCube = Instantiate(_cubePrefab, _cubeParent);
-        newCube.Touched += (с) => { _pool.Release(с); };
+        newCube.Touched += OnCubeTouched;
         newCube.gameObject.SetActive(false);
         return newCube;
     }
     
     private void OnGetCube(Cube cube)
     {
-        GameObject obj = cube.gameObject;
-        obj.transform.position = GetSpawnPosition();
-        obj.transform.rotation = Quaternion.identity;
-        obj.SetActive(true);
+        cube.transform.position = GetSpawnPosition();
+        cube.transform.rotation = Quaternion.identity;
+        cube.Init();
+        cube.gameObject.SetActive(true);
     }
 
     private void OnReleaseCube(Cube cube)
@@ -48,7 +48,7 @@ public class CubeSpawner : MonoBehaviour
 
     private void OnDestroyCube(Cube cube)
     {
-        cube.Touched -= (c) => { _pool.Release(c); };
+        cube.Touched -= OnCubeTouched;
         Destroy(cube);
     }
 
@@ -62,6 +62,9 @@ public class CubeSpawner : MonoBehaviour
             yield return wait;
         }
     }
+
+    private void OnCubeTouched(Cube cube)
+        => _pool.Release(cube);
     
     private Vector3 GetSpawnPosition()
     {

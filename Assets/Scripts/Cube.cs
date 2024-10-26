@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -24,12 +25,6 @@ public class Cube : MonoBehaviour
         _startColor = _material.color;
     }
 
-    private void OnDisable()
-    {
-        _isContacted = false;
-        _material.color = _startColor;
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         if (_isContacted)
@@ -40,16 +35,23 @@ public class Cube : MonoBehaviour
 
         _isContacted = true;
         _material.color = GetColor();
+        
+        StartCoroutine(ThrowTouchedEvent());
+    }
 
-        float untilDeath = Random.Range(_minUntilDeath, _maxUntilDeath);
-        Invoke(nameof(ThrowTouchedEvent) , untilDeath);
+    public void Init()
+    {
+        _isContacted = false;
+        _material.color = _startColor;
     }
 
     private Color GetColor()
         => Random.ColorHSV();
     
-    private void ThrowTouchedEvent()
+    private IEnumerator ThrowTouchedEvent()
     {
+        float untilDeath = Random.Range(_minUntilDeath, _maxUntilDeath + 1);
+        yield return new WaitForSeconds(untilDeath);
         Touched?.Invoke(this);
     }
 }
