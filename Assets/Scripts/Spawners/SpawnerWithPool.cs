@@ -9,6 +9,11 @@ public class SpawnerWithPool<T> : MonoBehaviour
     [SerializeField] private Transform _prefabParent;
 
     private ObjectPool<T> _pool;
+    private int _spawnedCount;
+    
+    public event Action<int> Created;
+    public event Action<int> Spawned;
+    public event Action<int> ChangedActive;
 
     protected virtual void Awake()
     {
@@ -23,12 +28,15 @@ public class SpawnerWithPool<T> : MonoBehaviour
 
     public virtual T Spawn()
     {
+        Spawned?.Invoke(++_spawnedCount);
+        ChangedActive?.Invoke(_pool.CountActive);
         return _pool.Get();
     }
 
     public virtual void Release(T obj)
     {
         _pool.Release(obj);
+        ChangedActive?.Invoke(_pool.CountActive);
     }
 
     protected virtual T OnCreateObject()
@@ -37,6 +45,7 @@ public class SpawnerWithPool<T> : MonoBehaviour
         obj.gameObject.SetActive(false);
 
         obj.Released += OnObjectReleased;
+        Created?.Invoke(_pool.CountAll);
         return obj;
     }
 
@@ -44,6 +53,7 @@ public class SpawnerWithPool<T> : MonoBehaviour
     {
         obj.Init();
         obj.gameObject.SetActive(true);
+        
     }
 
     protected virtual void OnReleaseObject(T obj)
