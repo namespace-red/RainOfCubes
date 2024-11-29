@@ -132,8 +132,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3570897}
-  - component: {fileID: 3570899}
   - component: {fileID: 3570898}
+  - component: {fileID: 3570900}
+  - component: {fileID: 3570899}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -189,9 +190,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d657687979a90d041b69e919fe936bbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _prefab: {fileID: 7376667481092712256, guid: 7ff55730228ae024b840e20e30ee5e57, type: 3}
+  _prefabParent: {fileID: 873085747}
   _cooldown: 0.2
-  _cubePrefab: {fileID: 7376667481092712256, guid: 7ff55730228ae024b840e20e30ee5e57, type: 3}
-  _cubeParent: {fileID: 873085747}
+--- !u!114 &3570900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3570896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4050ea1984a34b346a336d77e305e4e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &160552845
 GameObject:
   m_ObjectHideFlags: 0
