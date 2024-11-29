@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 
 public class SpawnerWithPool<T> : MonoBehaviour
-    where T : MonoBehaviour
+    where T : MonoBehaviour, IPoolableObject
 {
     [SerializeField] private T _prefab;
     [SerializeField] private Transform _prefabParent;
@@ -35,11 +35,14 @@ public class SpawnerWithPool<T> : MonoBehaviour
     {
         var obj = Instantiate(_prefab, _prefabParent);
         obj.gameObject.SetActive(false);
+
+        obj.Released += OnObjectReleased;
         return obj;
     }
 
     protected virtual void OnGetObject(T obj)
     {
+        obj.Init();
         obj.gameObject.SetActive(true);
     }
 
@@ -50,6 +53,12 @@ public class SpawnerWithPool<T> : MonoBehaviour
     
     protected virtual void OnDestroyObject(T obj)
     {
+        obj.Released -= OnObjectReleased;
         Destroy(obj);
+    }
+
+    private void OnObjectReleased(IPoolableObject obj)
+    {
+        Release((T)obj);
     }
 }

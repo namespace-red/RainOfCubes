@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Renderer))]
-public class Cube : MonoBehaviour
+public class Cube : MonoBehaviour, IPoolableObject
 {
     [SerializeField] private float _minUntilDeath = 2f;
     [SerializeField] private float _maxUntilDeath = 5f;
@@ -14,7 +14,7 @@ public class Cube : MonoBehaviour
     private Color _startColor;
     private bool _isContacted;
 
-    public event Action<Cube> Finished; 
+    public event Action<IPoolableObject> Released; 
     
     public Rigidbody Rigidbody { get; private set; }
 
@@ -36,7 +36,7 @@ public class Cube : MonoBehaviour
         _isContacted = true;
         _material.color = GetColor();
         
-        StartCoroutine(ThrowFinishedEvent());
+        StartCoroutine(ThrowReleasedEvent());
     }
 
     public void Init()
@@ -48,10 +48,10 @@ public class Cube : MonoBehaviour
     private Color GetColor()
         => Random.ColorHSV();
     
-    private IEnumerator ThrowFinishedEvent()
+    private IEnumerator ThrowReleasedEvent()
     {
         float untilDeath = Random.Range(_minUntilDeath, _maxUntilDeath + 1);
         yield return new WaitForSeconds(untilDeath);
-        Finished?.Invoke(this);
+        Released?.Invoke(this);
     }
 }

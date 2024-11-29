@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -5,11 +6,15 @@ using UnityEngine;
 public class CubeSpawner : SpawnerWithPool<Cube>
 {
     [SerializeField] private float _cooldown;
+    [SerializeField] private BombSpawner _bombSpawner;
     
     private IPosition _spawnPosition;
 
     protected override void Awake()
     {
+        if (_bombSpawner == null)
+            throw new NullReferenceException(nameof(_bombSpawner));
+
         base.Awake();
 
         _spawnPosition = GetComponent<IPosition>();
@@ -20,31 +25,22 @@ public class CubeSpawner : SpawnerWithPool<Cube>
         StartCoroutine(Run());
     }
 
-    protected override Cube OnCreateObject()
-    {
-        Cube newCube = base.OnCreateObject();
-        newCube.Finished += OnCubeFinished;
-        return newCube;
-    }
-
     protected override void OnGetObject(Cube cube)
     {
         cube.transform.position = _spawnPosition.Get();
-        cube.Init();
-        cube.gameObject.SetActive(true);
+        base.OnGetObject(cube);
     }
 
     protected override void OnReleaseObject(Cube cube)
     {
         cube.gameObject.SetActive(false);
+        
+        var  bomb = _bombSpawner.Spawn(cube.transform.position);
+        bomb.Rigidbody.velocity = cube.Rigidbody.velocity;
+        bomb.BlowUp();
+        
         cube.Rigidbody.velocity = Vector3.zero;
         cube.transform.rotation = Quaternion.identity;
-    }
-
-    protected override void OnDestroyObject(Cube cube)
-    {
-        cube.Finished -= OnCubeFinished;
-        Destroy(cube);
     }
 
     private IEnumerator Run()
@@ -56,10 +52,5 @@ public class CubeSpawner : SpawnerWithPool<Cube>
             Spawn();
             yield return wait;
         }
-    }
-
-    private void OnCubeFinished(Cube cube)
-    {
-        Release(cube);
     }
 }
