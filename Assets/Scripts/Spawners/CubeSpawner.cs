@@ -33,7 +33,7 @@ public class CubeSpawner : SpawnerWithPool<Cube>
 
     protected override void OnReleaseObject(Cube cube)
     {
-        cube.gameObject.SetActive(false);
+        base.OnReleaseObject(cube);
         
         var  bomb = _bombSpawner.Spawn(cube.transform.position);
         bomb.Rigidbody.velocity = cube.Rigidbody.velocity;

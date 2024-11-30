@@ -53,7 +53,6 @@ public class SpawnerWithPool<T> : MonoBehaviour
     {
         obj.Init();
         obj.gameObject.SetActive(true);
-        
     }
 
     protected virtual void OnReleaseObject(T obj)
