@@ -17,13 +17,16 @@ public class SpawnerWithPool<T> : MonoBehaviour
 
     protected virtual void Awake()
     {
+        _pool = new ObjectPool<T>(OnCreateObject, OnGetObject, OnReleaseObject, OnDestroyObject);
+    }
+
+    protected virtual void OnValidate()
+    {
         if (_prefab == null)
             throw new NullReferenceException(nameof(_prefab));
         
         if (_prefabParent == null)
             throw new NullReferenceException(nameof(_prefabParent));
-
-        _pool = new ObjectPool<T>(OnCreateObject, OnGetObject, OnReleaseObject, OnDestroyObject);
     }
 
     public virtual T Spawn()

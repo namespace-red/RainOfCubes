@@ -12,12 +12,17 @@ public class CubeSpawner : SpawnerWithPool<Cube>
 
     protected override void Awake()
     {
-        if (_bombSpawner == null)
-            throw new NullReferenceException(nameof(_bombSpawner));
-
         base.Awake();
 
         _spawnPosition = GetComponent<IPosition>();
+    }
+
+    protected override void OnValidate()
+    {
+        base.OnValidate();
+        
+        if (_bombSpawner == null)
+            throw new NullReferenceException(nameof(_bombSpawner));
     }
 
     private void OnEnable()

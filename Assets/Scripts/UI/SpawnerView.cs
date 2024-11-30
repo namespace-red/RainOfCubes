@@ -10,7 +10,7 @@ public class SpawnerView<T> : MonoBehaviour
     [SerializeField] private TMP_Text _spawnedText;
     [SerializeField] private TMP_Text _activeText;
 
-    private void Awake()
+    private void OnValidate()
     {
         if (_spawner == null)
             throw new NullReferenceException(nameof(_spawner));
