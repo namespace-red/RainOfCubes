@@ -39,7 +39,7 @@ public class Bomb : MonoBehaviour, IPoolableObject
 
     private IEnumerator PreparingForExplosion()
     {
-        float untilDeath = Random.Range(_minUntilDeath, _maxUntilDeath + 1);
+        float untilDeath = Random.Range(_minUntilDeath, _maxUntilDeath);
 
         while (untilDeath > 0)
         {

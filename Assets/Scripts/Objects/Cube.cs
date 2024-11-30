@@ -50,7 +50,7 @@ public class Cube : MonoBehaviour, IPoolableObject
     
     private IEnumerator ThrowReleasedEvent()
     {
-        float untilDeath = Random.Range(_minUntilDeath, _maxUntilDeath + 1);
+        float untilDeath = Random.Range(_minUntilDeath, _maxUntilDeath);
         yield return new WaitForSeconds(untilDeath);
         Released?.Invoke(this);
     }
